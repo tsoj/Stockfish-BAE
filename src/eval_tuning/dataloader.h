@@ -15,8 +15,7 @@ struct BufferEntry {
 };
 
 template<typename T>
-concept Datareader = requires(T t, std::filesystem::path path) {
-    { T(path) };
+concept Datareader = requires(T t) {
     { t.next() } -> std::same_as<std::optional<BufferEntry>>;
 };
 

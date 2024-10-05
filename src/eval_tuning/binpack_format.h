@@ -74,7 +74,7 @@ constexpr std::array<std::array<uint8_t, 8>, 256> nthSetBitIndex = []() {
 
     return t;
 }();
-}
+}  // namespace lookup
 
 inline int nthSetBitIndex(uint64_t v, uint64_t n) {
 
@@ -100,7 +100,7 @@ inline int nthSetBitIndex(uint64_t v, uint64_t n) {
 
     return static_cast<int>(lookup::nthSetBitIndex[v & 0xFFull][n] + shift);
 }
-}
+}  // namespace util
 
 namespace binpack {
 constexpr std::size_t KiB = 1024;
@@ -990,7 +990,7 @@ inline void validateBinpack(const std::string& inputPath) {
 
 
 
-
+template<float wdlRatio>
 class BinpackReader {
    public:
     explicit BinpackReader(const std::filesystem::path& path) : m_reader(path.string()) {
@@ -1012,8 +1012,9 @@ class BinpackReader {
             {
                 outcome = binpack::invert_wdl(outcome);
             }
-
-            outcome = outcome / 2.0F + probability / 2.0F;
+            static_assert(wdlRatio >= 0.0F);
+            static_assert(wdlRatio <= 1.0F);
+            outcome = outcome * wdlRatio + probability * (1.0F - wdlRatio);
             assert(outcome <= 1.0);
             assert(outcome >= 0.0);
             return BufferEntry{Eval::toEvalPosition(e.pos), outcome};
@@ -1025,4 +1026,5 @@ class BinpackReader {
     binpack::CompressedTrainingDataEntryReader m_reader;
 };
 
-using BinpackDataloader = Dataloader<BinpackReader>;
+template<float wdlRatio>
+using BinpackDataloader = Dataloader<BinpackReader<wdlRatio>>;

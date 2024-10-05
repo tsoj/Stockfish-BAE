@@ -35,7 +35,7 @@ inline void eval_tune() {
 
     // clang-format off
     AggregatedDataloader dataloader({
-        {std::make_shared<BinpackDataloader>("test77-dec2021-16tb7p.no-db.min.binpack", positionBufferSize), 0.5},
+        {std::make_shared<BinpackDataloader<1.0F>>("test77-dec2021-16tb7p.no-db.min.binpack", positionBufferSize), 0.5},
         {std::make_shared<NalwaldDataloader>("/home/tsoj/Dokumente/Projects/Nalwald/res/trainingSets", positionBufferSize), 0.8},
         {std::make_shared<EpdDataloader>("/home/tsoj/Dokumente/Projects/Nalwald/res/trainingSets", positionBufferSize), 0.1},
     });
